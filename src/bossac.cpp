@@ -335,7 +335,7 @@ main(int argc, char* argv[])
     {
         if (config.help)
             printf("Usage: %s [OPTION...] [FILE]\n", argv[0]);
-        printf("Basic Open Source SAM-BA Application (BOSSA) Version " VERSION "\n"
+        printf("Basic Open Source SAM-BA Application (BOSSA) Version \n"
                "Flash programmer for Atmel SAM devices.\n"
                "Copyright (c) 2011-2018 ShumaTech (http://www.shumatech.com)\n"
               );

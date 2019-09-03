@@ -3,7 +3,7 @@
 //
 // Copyright (c) 2011-2018, ShumaTech
 // All rights reserved.
-//
+// 
 // Redistribution and use in source and binary forms, with or without
 // modification, are permitted provided that the following conditions are met:
 //     * Redistributions of source code must retain the above copyright
@@ -14,7 +14,7 @@
 //     * Neither the name of the <organization> nor the
 //       names of its contributors may be used to endorse or promote products
 //       derived from this software without specific prior written permission.
-//
+// 
 // THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
 // ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
 // WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
@@ -26,82 +26,110 @@
 // (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 // SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 ///////////////////////////////////////////////////////////////////////////////
-#include "Flash.h"
+#include "IMRXTFlash.h"
 
 #include <assert.h>
+#include <unistd.h>
+#include <stdio.h>
 
-Flash::Flash(Samba& samba,
-             const std::string& name,
-             uint32_t addr,
-             uint32_t pages,
-             uint32_t size,
-             uint32_t planes,
-             uint32_t lockRegions,
-             uint32_t user,
-             uint32_t stack)
-    : _samba(samba), _name(name), _addr(addr), _pages(pages), _size(size),
-      _planes(planes), _lockRegions(lockRegions), _user(user), _wordCopy(samba, user)
+
+
+#define ERASE_BLOCK_PAGES 32
+
+IMRXTFlash::IMRXTFlash(Samba& samba,
+                   const std::string& name,
+                   uint32_t addr,
+                   uint32_t pages,
+                   uint32_t size,
+                   uint32_t planes,
+                   uint32_t lockRegions,
+                   uint32_t user,
+                   uint32_t stack,
+                   bool canBootFlash)
+    : Flash(samba, name, addr, pages, size, planes, lockRegions, user, stack),
+      _canBootFlash(canBootFlash)
 {
-    assert((size & (size - 1)) == 0);
-    assert((pages & (pages - 1)) == 0);
-    assert((lockRegions & (lockRegions - 1)) == 0);
-   
-    _wordCopy.setWords(size / sizeof(uint32_t));
-    
-    _wordCopy.setStack(stack);
 
-    _onBufferA = true;
+    eraseAuto(true);
+  
+}
 
-    // page buffers will have the size of a physical page and will be situated right after the applet
-    _pageBufferA = ((_user + _wordCopy.size() + 3) / 4) * 4; // we need to avoid non 32bits aligned access on Cortex-M0+
-    _pageBufferB = _pageBufferA + size;
+IMRXTFlash::~IMRXTFlash()
+{
 }
 
 void
-Flash::setLockRegions(const std::vector<bool>& regions)
+IMRXTFlash::eraseAll(uint32_t offset)
 {
-    if (regions.size() > _lockRegions)
-        throw FlashRegionError();
-
-    _regions.set(regions);
+   printf("Didn't support this function.");
+   return;
 }
 
 void
-Flash::setSecurity()
+IMRXTFlash::erase(uint32_t offset, uint32_t size)
 {
-    _security.set(true);
+   printf("Didn't support this function.");
+   return;
 }
 
 void
-Flash::setBor(bool enable)
+IMRXTFlash::eraseAuto(bool enable)
 {
-    if (canBor())
-        _bor.set(enable);
+    return ;
+}
+
+std::vector<bool>
+IMRXTFlash::getLockRegions()
+{
+    std::vector<bool> regions(_lockRegions);
+    uint32_t fsr0;
+    uint32_t fsr1;
+
+
+    return regions;
+}
+
+bool
+IMRXTFlash::getSecurity()
+{
+   return false;
+}
+
+bool
+IMRXTFlash::getBod()
+{
+   return false;
+}
+
+bool
+IMRXTFlash::getBor()
+{
+    return false;
+}
+
+bool
+IMRXTFlash::getBootFlash()
+{
+   return false;
 }
 
 void
-Flash::setBod(bool enable)
+IMRXTFlash::writeOptions()
 {
-    if (canBod())
-        _bod.set(enable);
+  
 }
 
 void
-Flash::setBootFlash(bool enable)
+IMRXTFlash::writePage(uint32_t page)
 {
-    if (canBootFlash())
-        _bootFlash.set(enable);
+    usleep(10);
+   _samba.program(page * _size, _onBufferA ? _pageBufferA : _pageBufferB);
+
 }
 
 void
-Flash::loadBuffer(const uint8_t* data, uint16_t bufferSize)
+IMRXTFlash::readPage(uint32_t page, uint8_t* data)
 {
-    _samba.write(_onBufferA ? _pageBufferA : _pageBufferB, data, bufferSize);
-}
-
-void
-Flash::writeBuffer(uint32_t dst_addr, uint32_t size)
-{
-    _samba.writeBuffer(_onBufferA ? _pageBufferA : _pageBufferB, dst_addr + _addr, size);
+  
 }
 

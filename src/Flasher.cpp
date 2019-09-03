@@ -107,9 +107,11 @@ Flasher::write(const char* filename, uint32_t foffset)
             throw FileSizeError();
 
         _observer.onStatus("Write %ld bytes to flash (%u pages)\n", fsize, numPages);
-
+       
+      
         if (_samba.canWriteBuffer())
         {
+           
             uint32_t offset = 0;
             uint32_t bufferSize = _samba.writeBufferSize();
             uint8_t buffer[bufferSize];
@@ -203,7 +205,7 @@ Flasher::verify(const char* filename, uint32_t& pageErrors, uint32_t& totalError
         while ((fbytes = fread(bufferA, 1, pageSize, infile)) > 0)
         {
             byteErrors = 0;
-            
+            calcCrc = 0;
             _observer.onProgress(pageNum, numPages);
 
             if (_samba.canChecksumBuffer())
@@ -211,6 +213,8 @@ Flasher::verify(const char* filename, uint32_t& pageErrors, uint32_t& totalError
                 for (uint32_t i = 0; i < fbytes; i++)
                     calcCrc = _samba.checksumCalc(bufferA[i], calcCrc);
                 
+                
+
                 flashCrc = _samba.checksumBuffer((pageOffset + pageNum) * pageSize, fbytes);
                 
                 if (flashCrc != calcCrc)

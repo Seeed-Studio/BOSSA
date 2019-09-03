@@ -59,7 +59,7 @@ Samba::Samba() :
     _canWriteBuffer(false),
     _canChecksumBuffer(false),
     _readBufferSize(0),
-    _debug(false),
+    _debug(true),
     _isUsb(false)
 {
 }
@@ -71,8 +71,8 @@ Samba::~Samba()
 bool
 Samba::init()
 {
+    
     uint8_t cmd[3];
-
     _port->timeout(TIMEOUT_QUICK);
 
     // Flush garbage
@@ -96,10 +96,13 @@ Samba::init()
     // Set binary mode
     if (_debug)
         printf("Set binary mode\n");
+
     cmd[0] = 'N';
     cmd[1] = '#';
     _port->write(cmd, 2);
+    
     _port->read(cmd, 2);
+
 
     std::string ver;
     try
@@ -112,6 +115,8 @@ Samba::init()
     }
 
     std::size_t extIndex = ver.find("[Arduino:");
+    
+     
     if (extIndex != string::npos)
     {
         extIndex += 9;
@@ -668,5 +673,40 @@ Samba::checksumBuffer(uint32_t start_addr, uint32_t size)
     if (_debug)
         printf("%x\n", res);
     return res;
+}
+
+void
+Samba::program(uint32_t dst, uint32_t src)
+{
+    uint8_t cmd[20];
+    uint8_t Pause = ' ';
+
+    if (_debug)
+        printf("%s(dst=%#x,src=%#x)\n", __FUNCTION__, dst, src);
+
+    snprintf((char*) cmd, sizeof(cmd), "y%08X,%08X#", dst, src);
+
+    
+    if (_port->write(&Pause, 1) != 1)
+        throw SambaError();
+
+    if (_port->write(cmd, sizeof(cmd) - 1) != sizeof(cmd) - 1)
+        throw SambaError();
+
+  
+
+     _port->timeout(TIMEOUT_LONG);
+      cmd[0] = 0;
+     _port->read(cmd, 3);
+     _port->timeout(TIMEOUT_NORMAL);
+
+
+     if(cmd[0] == 'Y')
+     {
+        return;
+     }else{
+         throw SambaError();
+     }
+   
 }
 

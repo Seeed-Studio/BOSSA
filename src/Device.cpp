@@ -31,6 +31,7 @@
 #include "EefcFlash.h"
 #include "D2xNvmFlash.h"
 #include "D5xNvmFlash.h"
+#include "IMRXTFlash.h"
 
 void
 Device::readChipId(uint32_t& chipId, uint32_t& extChipId)
@@ -42,7 +43,12 @@ Device::readChipId(uint32_t& chipId, uint32_t& extChipId)
     else if ((chipId = _samba.readWord(0x400e0940)) != 0)
     {
         extChipId = _samba.readWord(0x400e0944);
+    }else if((chipId = _samba.readWord(0x60040000)) != 0)
+    {
+        extChipId = _samba.readWord(0x60040004);
     }
+
+    
 }
 
 void
@@ -53,6 +59,8 @@ Device::create()
     uint32_t cpuId = 0;
     uint32_t extChipId = 0;
     uint32_t deviceId = 0;
+     
+    
 
     // Device identification must be performed carefully to avoid reading from
     // addresses that devices do not support which will lock up the CPU
@@ -98,6 +106,19 @@ Device::create()
     // Instantiate the proper flash for the device
     switch (chipId & 0x7fffffe0)
     {
+
+    //
+    // IMRXT    
+    //
+    case 0x00005240:
+        switch (extChipId){
+            //1052
+            case 0x31303532:
+            _family = FAMILY_IMRXT;
+            flashPtr = new IMRXTFlash(_samba, "IMRXT1052", 0x60080000, 0x20000, 512, 1, 32, 0x2001FC00, 0x202000, true);
+            break;
+        }
+        break;
     //
     // SAM7SE
     //
@@ -627,6 +648,7 @@ Device::create()
         throw DeviceUnsupportedError();
         break;
     }
+
 
     _flash = std::unique_ptr<Flash>(flashPtr);
 }

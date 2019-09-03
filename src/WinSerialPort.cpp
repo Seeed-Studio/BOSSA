@@ -140,7 +140,8 @@ WinSerialPort::open(int baud, int data, SerialPort::Parity parity, SerialPort::S
     }
 
     timeout(INT_MAX);
-
+    setDTR(true);
+    setRTS(true);
     return true;
 }
 

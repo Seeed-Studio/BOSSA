@@ -61,8 +61,11 @@ public:
     void writeWord(uint32_t addr, uint32_t value);
     uint32_t readWord(uint32_t addr);
 
+    void program(uint32_t dst, uint32_t src);
+   
     void write(uint32_t addr, const uint8_t* buffer, int size);
     void read(uint32_t addr, uint8_t* buffer, int size);
+
 
     void go(uint32_t addr);
 
@@ -80,6 +83,7 @@ public:
     bool canChipErase() { return _canChipErase; }
     void chipErase(uint32_t start_addr);
 
+    
     bool canWriteBuffer() { return _canWriteBuffer; }
     void writeBuffer(uint32_t src_addr, uint32_t dst_addr, uint32_t size);
     uint32_t writeBufferSize() { return 4096; }

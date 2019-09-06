@@ -10,3 +10,7 @@ tags
 *.bak
 install/*.crt
 install/*.p12
+
+/src/CMakeLists.txt
+build/
+

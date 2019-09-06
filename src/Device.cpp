@@ -31,7 +31,7 @@
 #include "EefcFlash.h"
 #include "D2xNvmFlash.h"
 #include "D5xNvmFlash.h"
-#include "IMRXTFlash.h"
+#include "IMXRTFlash.h"
 
 void
 Device::readChipId(uint32_t& chipId, uint32_t& extChipId)
@@ -43,9 +43,9 @@ Device::readChipId(uint32_t& chipId, uint32_t& extChipId)
     else if ((chipId = _samba.readWord(0x400e0940)) != 0)
     {
         extChipId = _samba.readWord(0x400e0944);
-    }else if((chipId = _samba.readWord(0x60040000)) != 0)
+    }else if((chipId = _samba.readWord(0x60000000)) != 0)
     {
-        extChipId = _samba.readWord(0x60040004);
+        extChipId = _samba.readWord(0x60000004);
     }
 
     
@@ -110,12 +110,17 @@ Device::create()
     //
     // IMRXT    
     //
-    case 0x00005240:
+    case 0x42464340:
         switch (extChipId){
             //1052
             case 0x31303532:
             _family = FAMILY_IMRXT;
-            flashPtr = new IMRXTFlash(_samba, "IMRXT1052", 0x60080000, 0x20000, 512, 1, 32, 0x2001FC00, 0x202000, true);
+            flashPtr = new IMXRTFlash(_samba, "IMRXT1052", 0x60080000, 0x20000, 512, 1, 32, 0x2001FC00, 0x202000, true);
+            break;
+            //1062
+            case 0x31303632:
+            _family = FAMILY_IMRXT;
+            flashPtr = new IMXRTFlash(_samba, "IMRXT1062", 0x60010000, 0x08000, 256, 1, 32, 0x2001FC00, 0x202000, true);
             break;
         }
         break;
@@ -701,7 +706,9 @@ Device::reset()
         case FAMILY_SAM9XE:
             _samba.writeWord(0xFFFFFD00, 0xA500000D);
             break;
-
+        case FAMILY_IMRXT:
+            _samba.go(0x60000000);
+            break;
         default:
             break;
         }

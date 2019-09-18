@@ -59,7 +59,7 @@ Samba::Samba() :
     _canWriteBuffer(false),
     _canChecksumBuffer(false),
     _readBufferSize(0),
-    _debug(true),
+    _debug(false),
     _isUsb(false)
 {
 }

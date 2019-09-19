@@ -115,12 +115,12 @@ Device::create()
             //1052
             case 0x31303532:
             _family = FAMILY_IMRXT;
-            flashPtr = new IMXRTFlash(_samba, "IMRXT1052", 0x60010000, 0x07F00, 256, 1, 32, 0x2001FC00, 0x202000, true);
+            flashPtr = new IMXRTFlash(_samba, "IMRXT1052", 0x60010000, 0x08000, 256, 1, 32, 0x2001FC00, 0x202000, true);
             break;
             //1062
             case 0x31303632:
             _family = FAMILY_IMRXT;
-            flashPtr = new IMXRTFlash(_samba, "IMRXT1062", 0x60010000, 0x1FF00, 256, 1, 32, 0x2001FC00, 0x202000, true);
+            flashPtr = new IMXRTFlash(_samba, "IMRXT1062", 0x60010000, 0x20000, 256, 1, 32, 0x2001FC00, 0x202000, true);
             break;
         }
         break;

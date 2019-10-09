@@ -43,9 +43,9 @@ Device::readChipId(uint32_t& chipId, uint32_t& extChipId)
     else if ((chipId = _samba.readWord(0x400e0940)) != 0)
     {
         extChipId = _samba.readWord(0x400e0944);
-    }else if((chipId = _samba.readWord(0x60000000)) != 0)
+    }else if((chipId = _samba.readWord(0x6000F000)) != 0)
     {
-        extChipId = _samba.readWord(0x60000004);
+        extChipId = _samba.readWord(0x6000F004);
     }
 
     
@@ -110,7 +110,7 @@ Device::create()
     //
     // IMRXT    
     //
-    case 0x42464340:
+    case 0x00005240:
         switch (extChipId){
             //1052
             case 0x31303532:

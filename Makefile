@@ -9,7 +9,7 @@ WXVERSION=3.0
 #
 # Source files
 #
-COMMON_SRCS=Samba.cpp Flash.cpp D5xNvmFlash.cpp D2xNvmFlash.cpp EfcFlash.cpp EefcFlash.cpp Applet.cpp WordCopyApplet.cpp Flasher.cpp Device.cpp
+COMMON_SRCS=Samba.cpp Flash.cpp D5xNvmFlash.cpp D2xNvmFlash.cpp EfcFlash.cpp EefcFlash.cpp IMXRTFlash.cpp Applet.cpp WordCopyApplet.cpp Flasher.cpp Device.cpp
 APPLET_SRCS=WordCopyArm.asm
 BOSSA_SRCS=BossaForm.cpp BossaWindow.cpp BossaAbout.cpp BossaApp.cpp BossaBitmaps.cpp BossaInfo.cpp BossaThread.cpp BossaProgress.cpp
 BOSSA_BMPS=BossaLogo.bmp BossaIcon.bmp ShumaTechLogo.bmp
@@ -194,7 +194,7 @@ ARMOBJCOPY=$(ARM)objcopy
 #
 # CXX Flags
 #
-COMMON_CXXFLAGS+=-Wall -Werror -MT $@ -MD -MP -MF $(@:%.o=%.d) -DVERSION=\"$(VERSION)\" -g -O2 $(CXXFLAGS)
+COMMON_CXXFLAGS+=-Wall -MT $@ -MD -MP -MF $(@:%.o=%.d) -DVERSION=\"$(VERSION)\" -g -O2 $(CXXFLAGS)
 WX_CXXFLAGS:=$(shell wx-config --cxxflags --version=$(WXVERSION)) -DWX_PRECOMP -Wno-ctor-dtor-privacy -O2 -fno-strict-aliasing
 BOSSA_CXXFLAGS=$(COMMON_CXXFLAGS) $(WX_CXXFLAGS)
 BOSSAC_CXXFLAGS=$(COMMON_CXXFLAGS)

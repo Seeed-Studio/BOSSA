@@ -18,6 +18,7 @@
 ///////////////////////////////////////////////////////////////////////////////
 
 #include "D5xNvmFlash.h"
+#include <unistd.h>
 
 
 #define CMDEX_KEY       0xa500
@@ -61,6 +62,7 @@ D5xNvmFlash::D5xNvmFlash(
     :
     Flash(samba, name, 0, pages, size, 1, 32, user, stack), _eraseAuto(true)
 {
+    sleep(1);
 }
 
 D5xNvmFlash::~D5xNvmFlash()

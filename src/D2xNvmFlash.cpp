@@ -18,6 +18,7 @@
 ///////////////////////////////////////////////////////////////////////////////
 
 #include "D2xNvmFlash.h"
+#include <unistd.h>
 
 // CMDEX field should be 0xA5 to allow execution of any command.
 #define CMDEX_KEY                       0xa500
@@ -67,6 +68,7 @@ D2xNvmFlash::D2xNvmFlash(
     :
     Flash(samba, name, 0, pages, size, 1, 16, user, stack), _eraseAuto(true)
 {
+    sleep(1);
 }
 
 D2xNvmFlash::~D2xNvmFlash()
